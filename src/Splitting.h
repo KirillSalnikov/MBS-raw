@@ -8,7 +8,7 @@
 class Splitting
 {
 public:
-	Splitting(bool isOpticalPath);
+    Splitting(bool isOpticalPath = true);
 	void ComputeRiParams(const complex &ri);
 
 	void ComputeCosA(const Point3f &normal, const Point3f &incidentDir);

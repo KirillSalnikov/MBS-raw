@@ -17,21 +17,8 @@ void HandlerBackScatterPoint::HandleBeams(std::vector<Beam> &beams, double sinZe
     Point3d backDirection(0, 0, 1);
     Point3d vf = -m_incidentLight->polarizationBasis;
 
-#ifdef _DEBUG // DEB
-    int cc = 0;
-#endif
     for (Beam &beam : beams)
     {
-#ifdef _DEBUG // DEB
-        cc++;
-//		double m11 = real(diffractedMatrix[0][0]);
-        std::vector<int> tr;
-        Tracks::RecoverTrack(beam, m_particle->nFacets, tr);
-        if (tr[0] == 0 && tr[1] == 1 && tr[2] == 7 && tr[3] == 0)
-        {
-            int ddfdfdf = 0;
-        }
-#endif
         if (isBackScatteringConusEnabled && beam.direction.cz < backScatteringConus)
         {
             continue;
@@ -44,10 +31,6 @@ void HandlerBackScatterPoint::HandleBeams(std::vector<Beam> &beams, double sinZe
 //            continue;
 //        }
 
-#ifdef _DEBUG // DEB
-        if (cc == 93)
-            int ddddddd = 0;
-#endif
         beam.polarizationBasis = beam.RotateSpherical(-m_incidentLight->direction,
                                                       m_incidentLight->polarizationBasis);
 

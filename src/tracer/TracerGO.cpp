@@ -15,7 +15,6 @@ void TracerGO::TraceRandom(const AngleRange &betaRange, const AngleRange &gammaR
 	m_incomingEnergy = 0;
 	m_outcomingEnergy = 0;
 #endif
-
 	vector<Beam> outBeams;
 	double beta, gamma;
 
@@ -42,6 +41,7 @@ void TracerGO::TraceRandom(const AngleRange &betaRange, const AngleRange &gammaR
 
             m_particle->Rotate(beta, gamma, 0);
 			m_scattering->ScatterLight(beta, gamma, outBeams);
+
             m_handler->HandleBeams(outBeams, cs_beta);
 
 #ifdef _CHECK_ENERGY_BALANCE

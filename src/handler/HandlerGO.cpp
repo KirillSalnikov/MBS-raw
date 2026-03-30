@@ -101,9 +101,7 @@ void HandlerGO::MultiplyMueller(const Beam &beam, matrix &m)
 matrix HandlerGO::ComputeMueller(float zenAng, Beam &beam)
 {
     matrix m = Mueller(beam.J);
-//#ifdef _DEBUG // DEB
-//    double &ddd = m[0][0];
-//#endif
+
     if (zenAng < 180-FLT_EPSILON && zenAng > FLT_EPSILON)
     {
         const float &y = beam.direction.cy;
@@ -112,18 +110,8 @@ matrix HandlerGO::ComputeMueller(float zenAng, Beam &beam)
         {	// rotate the Mueller matrix of the beam to appropriate coordinate system
             RotateMuller(beam.direction, m);
         }
-
-#ifdef _CALC_AREA_CONTIBUTION_ONLY
-        bf = matrix(4,4);
-        bf.Identity();
-#endif
     }
 
-#ifdef _DEBUG
-        double ddd = m[0][1];
-        if (isnan(ddd))
-            int fff = 0;
-#endif
     MultiplyMueller(beam, m);
     return m;
 }
@@ -179,17 +167,13 @@ void HandlerGO::WriteToFile(ContributionGO &contrib, double norm,
                 ? 1-cos(thetaStepRad/2.0)
                 : (cos((j-0.5)*thetaStepRad)-cos((j+0.5)*thetaStepRad));
 
+        double dS = M_2PI*sn;
         // Special case in first and last step
 //        allFile << '\n' << tmp0 + tmp1 + tmp2 << ' ' << (M_2PI*sn);
         allFile << '\n' << RadToDeg(radius) - (j*thetaStepDeg) << ' '
-                << (M_2PI*sn);
+                << dS;
 
         matrix bf = contrib.muellers(0, j);
-
-//#ifdef _DEBUG // DEB
-//        double dd = bf[0][0];
-//        std::cout << sn;
-//#endif
 
         if (bf[0][0] < DBL_EPSILON)
         {
@@ -197,22 +181,22 @@ void HandlerGO::WriteToFile(ContributionGO &contrib, double norm,
         }
         else
         {
-            allFile << ' ' << bf[0][0]*norm/(M_2PI*sn)
-                    << ' ' << bf[0][1]
-                    << ' ' << bf[0][2]
-                    << ' ' << bf[0][3]
-                    << ' ' << bf[1][0]
-                    << ' ' << bf[1][1]
-                    << ' ' << bf[1][2]
-                    << ' ' << bf[1][3]
-                    << ' ' << bf[2][0]
-                    << ' ' << bf[2][1]
-                    << ' ' << bf[2][2]
-                    << ' ' << bf[2][3]
-                    << ' ' << bf[3][0]
-                    << ' ' << bf[3][1]
-                    << ' ' << bf[3][2]
-                    << ' ' << bf[3][3];
+            allFile << ' ' << bf[0][0]*norm/dS
+                    << ' ' << bf[0][1]*norm/dS
+                    << ' ' << bf[0][2]*norm/dS
+                    << ' ' << bf[0][3]*norm/dS
+                    << ' ' << bf[1][0]*norm/dS
+                    << ' ' << bf[1][1]*norm/dS
+                    << ' ' << bf[1][2]*norm/dS
+                    << ' ' << bf[1][3]*norm/dS
+                    << ' ' << bf[2][0]*norm/dS
+                    << ' ' << bf[2][1]*norm/dS
+                    << ' ' << bf[2][2]*norm/dS
+                    << ' ' << bf[2][3]*norm/dS
+                    << ' ' << bf[3][0]*norm/dS
+                    << ' ' << bf[3][1]*norm/dS
+                    << ' ' << bf[3][2]*norm/dS
+                    << ' ' << bf[3][3]*norm/dS;
         }
     }
 

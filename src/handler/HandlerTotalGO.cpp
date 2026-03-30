@@ -26,7 +26,6 @@ void HandlerTotalGO::HandleBeams(std::vector<Beam> &beams, double sinZenith)
 
         const float &z = acos(beam.direction.cz);
         matrix m = ComputeMueller(RadToDeg(z), beam);
-
         m_totalContrib.AddMueller(z, m);
     }
 }

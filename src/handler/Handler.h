@@ -6,6 +6,9 @@
 #include "MullerMatrix.h"
 #include "Tracks.h"
 
+#ifndef NODEBUG
+#include <iostream>
+#endif
 class ScatteringRange
 {
 public:

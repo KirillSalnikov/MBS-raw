@@ -23,17 +23,6 @@ void TracerPOTotal::TraceRandom(const AngleRange &betaRange,
     long long count = 0;
     long long nOrientations = (betaRange.number) * (gammaRange.number);
 
-#ifdef _DEBUG  /* DEB */
-    ofstream outFile(m_resultDirName + "log.dat", ios::out);
-    if (!outFile.is_open())
-    {
-        std::cerr << "Error! File \"" << m_resultDirName
-                  << "\" was not opened. " << __FUNCTION__;
-        throw std::exception();
-    }
-#endif
-
-
     vector<Beam> outBeams;
     double beta, gamma;
 
@@ -55,38 +44,19 @@ void TracerPOTotal::TraceRandom(const AngleRange &betaRange,
         "M31 M32 M33 M34 "\
         "M41 M42 M43 M44";
 
-//    ++nOrientations;
     timer.Start();
     OutputStartTime(timer);
 
-#ifdef _DEBUG  /* DEB */
     for (int i = 0; i <= betaRange.number; ++i)
     {
-//        std::cout  << "i: "<< i << std::endl;
-#else
-    for (int i = 0; i <= betaRange.number; ++i)
-    {
-#endif
         beta = betaRange.min + i*betaRange.step;
-
-//		double dcos = (i == 0 || i == betaRange.number)
-//				? (1.0-cos(0.5*betaRange.step))/normIndex
-//				: (cos((i-0.5)*betaRange.step) -
-//				   cos((i+0.5)*betaRange.step))/normIndex;
 
         double dcos;
         CalcCsBeta(betaNorm, beta, betaRange, gammaRange, normIndex, dcos);
         m_handler->SetSinZenith(dcos);
 
-#ifdef _DEBUG // DEB
         for (int j = 0; j < gammaRange.number; ++j)
         {
-//            std::cout  << "j: "<< j << std::endl;
-//			beta = DegToRad(15); gamma = DegToRad(0);
-#else
-        for (int j = 0; j < gammaRange.number; ++j)
-        {
-#endif
             gamma = gammaRange.min + j*gammaRange.step;
             m_particle->Rotate(/*M_PI-*/beta, /*M_PI+*/gamma, 0);
 
@@ -95,44 +65,11 @@ void TracerPOTotal::TraceRandom(const AngleRange &betaRange,
                 m_scattering->FormShadowBeam(outBeams);
             }
 
-#ifdef _DEBUG  /* DEB */
-            // if (i == 4 && j ==0)
-            //     int ffff = 0;
-#endif
             bool ok = m_scattering->ScatterLight(0, 0, outBeams);
 
             if (ok)
             {
-#ifdef _DEBUG  /* DEB */
-//             vector<Beam> be = outBeams;
-//            for (int k = 1; k < be.size(); ++k) {
-//                if (be[k].nActs==2) {
-//                    outBeams.push_back(be[k]);
-//                }
-//            }
-#endif
                 m_handler->HandleBeams(outBeams, dcos);
-//#ifdef _DEBUG  /* DEB */
-//            double sum = 0;
-//            for (int k = 0; k < outBeams.size(); ++k) {
-//                double aaa = outBeams[k].Area();
-////                ofstream outFile(m_resultDirName + to_string(k) + "_vertices.dat", ios::out);
-//                sum += aaa;
-//                std::vector<int> tr;
-//                m_handler->m_tracks->RecoverTrack(outBeams[k], m_particle->nFacets, tr);
-//                outFile << outBeams[k].id << " ";
-//                for (int l = 0; l < tr.size(); ++l) {
-//                    outFile << tr[l] << " ";
-//                }
-//               outFile << aaa << std::endl;
-////                outFile << outBeams[k].arr[0] << endl << endl;
-////                outFile.close();
-//            }
-//            outFile.close();
-//            double mm = ((HandlerPO*)m_handler)->M(0, 0)[0][0];
-//            std::cout << mm << " " << j << std::endl;
-//#else
-//#endif
             }
             else
             {
@@ -143,7 +80,6 @@ void TracerPOTotal::TraceRandom(const AngleRange &betaRange,
 
             OutputProgress(nOrientations, count, i, j, timer, outBeams.size());
             outBeams.clear();
-//            std::cout << "sdfewtwr";
             ++count;
         }
 
@@ -152,10 +88,6 @@ void TracerPOTotal::TraceRandom(const AngleRange &betaRange,
 
     static_cast<HandlerPOTotal*>(m_handler)->betaFile->close();
 
-//#ifdef _DEBUG  /* DEB */
-//    double mm = ((HandlerPO*)m_handler)->M(0, 0)[0][0];
-//    outFile.close();
-//#endif
 
     EraseConsoleLine(60);
     std::cout << "100%" << std::endl;
@@ -163,10 +95,8 @@ void TracerPOTotal::TraceRandom(const AngleRange &betaRange,
     // m_handler->m_outputEnergy = m_handler->ComputeTotalScatteringEnergy();
     m_handler->WriteTotalMatricesToFile(m_resultDirName);
     m_handler->WriteMatricesToFile(m_resultDirName, m_incomingEnergy);
-//#ifndef _DEBUG
 
     OutputStatisticsPO(timer, nOrientations, m_resultDirName);
-//#endif
 }
 
 void TracerPOTotal::TraceMonteCarlo(const AngleRange &betaRange,
