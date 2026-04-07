@@ -248,7 +248,7 @@ complex Handler::DiffractInclineAbs(const BeamInfo &info, const Beam &beam,
 
     if (abs(A) < m_eps2 && abs(B) < m_eps2)
     {
-        return m_invComplWave * info.area;
+        return -m_invComplWave * info.area;
     }
 
     complex s(0, 0);
@@ -300,6 +300,7 @@ complex Handler::DiffractInclineAbs(const BeamInfo &info, const Beam &beam,
             }
             else if (absCi > m_eps3)
             {
+                p1 = p2;
                 continue;
             }
             else
@@ -319,6 +320,7 @@ complex Handler::DiffractInclineAbs(const BeamInfo &info, const Beam &beam,
 #endif
             if (isnan(real(tmp2)))
             {
+                p1 = p2;
                 continue;
             }
 
@@ -357,6 +359,7 @@ complex Handler::DiffractInclineAbs(const BeamInfo &info, const Beam &beam,
             }
             else if (absEi > m_eps3)
             {
+                p1 = p2;
                 continue;
             }
             else
@@ -380,6 +383,7 @@ complex Handler::DiffractInclineAbs(const BeamInfo &info, const Beam &beam,
 #endif
             if (isnan(real(tmp2)))
             {
+                p1 = p2;
                 continue;
             }
 
@@ -431,7 +435,7 @@ complex Handler::DiffractIncline(const BeamInfo &info, const Beam &beam,
 #endif
     if (absA < m_eps2 && absB < m_eps2)
     {
-        return m_invComplWave * info.area;
+        return -m_invComplWave * info.area;
     }
 
     complex s(0, 0);
