@@ -248,7 +248,8 @@ complex Handler::DiffractInclineAbs(const BeamInfo &info, const Beam &beam,
 
     if (abs(A) < m_eps2 && abs(B) < m_eps2)
     {
-        return -m_invComplWave * info.area;
+        double absorp = exp(m_absMag*info.lenIndices.z);
+        return -m_invComplWave * info.area * absorp;
     }
 
     complex s(0, 0);
