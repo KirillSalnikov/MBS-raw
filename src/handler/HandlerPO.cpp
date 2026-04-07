@@ -387,7 +387,10 @@ void HandlerPO::HandleBeams(std::vector<Beam> &beams, double sinZenith)
             continue;
         }
 
-        if (m_hasAbsorption && beam.lastFacetId != __INT_MAX__ && beam.lastFacetId != -1)
+        // Skip ApplyAbsorption for nActs > 1: DiffractInclineAbs handles full absorption.
+        // (HandleBeams calls ApplyDiffraction→DiffractInclineAbs for absorbing beams.)
+        if (m_hasAbsorption && beam.lastFacetId != __INT_MAX__ && beam.lastFacetId != -1
+            && beam.nActs <= 1)
         {
             ApplyAbsorption(beam);
         }
